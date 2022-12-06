@@ -1,4 +1,5 @@
 (defvar *input* nil)
+(defvar *sliding-window* nil)
 
 (defun load-input (filename)
   (with-open-file (stream filename)
@@ -29,3 +30,16 @@
       (setf current item))
     (print change)))
       
+(defun create-sliding-window ()
+  (setf *sliding-window* (loop for i from 0 below (list-length *input*)
+	for window = (subseq *input* i (min (+ i 3) (list-length *input*)))
+	for window-sum = (reduce #'+ window)
+	collect window-sum)))
+
+(defun depth-change-counter (change current)
+    (progn
+      (dolist (item *sliding-window*)
+	(if (> item current) (incf change 1))
+	(setf current item))
+      (print change)))
+    
